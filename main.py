@@ -509,9 +509,22 @@ async def answer_audio(request: Request):
             for k in sd:
                 if k not in referenced:
                     referenced.append(k)
-    for c in referenced:
+    :
         if c not in columns:
             columns.append(c)
+
+    # Normalize and remove duplicates
+    normalized = []
+    seen = set()
+    
+    for c in columns:
+        if isinstance(c, str):
+            c = re.sub(r'([가-힣A-Za-z])\s+(\d+)$', r'\1\2', c.strip())
+        if c not in seen:
+            seen.add(c)
+            normalized.append(c)
+    
+    columns = normalized
 
     if not req_stats:
         req_stats = ["mean", "std", "variance", "min", "max", "median", "mode", "range", "allowed_values", "value_range", "correlation"]
